@@ -6,6 +6,7 @@ import asyncio, os
 from dotenv import load_dotenv  # ✅ добавлено
 load_dotenv()                   # ✅ добавлено
 
+from mangum import Mangum
 from app.database import engine, init_db
 from app.routers import reports, webhook
 from app import models
@@ -42,3 +43,5 @@ async def view_photo(report_id: int):
         raise HTTPException(status_code=404, detail="Photo not found")
     
     return FileResponse(photo_path)
+
+handler = Mangum(app)
