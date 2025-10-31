@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>EyeMap — Reports</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: Inter, system-ui, Arial; padding: 20px }
+    .report { border: 1px solid #ddd; padding: 10px; margin: 8px 0 }
+  </style>
+</head>
+<body>
+  <h1>EyeMap — Reports</h1>
+  <div id="list">Загрузка...</div>
+  <script>
+    async function load() {
+      try {
+        const res = await fetch('/api/reports');
+        const data = await res.json();
+        const list = document.getElementById('list');
+        if (!data || data.length === 0) {
+          list.innerText = 'Нет отчётов';
+          return;
+        }
+        list.innerHTML = '';
+        data.forEach(r => {
+          const el = document.createElement('div');
+          el.className = 'report';
+          el.innerHTML = `<strong>#${r.id}</strong> <em>${r.created_at}</em><br/>${r.description}<br/><small>${r.latitude}, ${r.longitude} — cluster: ${r.cluster_id ?? '-'}</small>`;
+          list.appendChild(el);
+        });
+      } catch (e) {
+        document.getElementById('list').innerText = 'Ошибка: ' + e.message;
+      }
+    }
+    load();
+  </script>
+</body>
+</html>
